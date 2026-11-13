@@ -11,10 +11,6 @@ import { Board } from './board.entity.js';
 export class BoardsService {
   constructor(private readonly boardRepository: BoardRepository) {}
 
-  // getAllBoards(): Board[] {
-  //   return this.boards;
-  // }
-
   async getBoardById(id: number): Promise<Board> {
     const board = await this.boardRepository.findOne({
       where: {
@@ -29,31 +25,18 @@ export class BoardsService {
     return board;
   }
 
-  // getBoardById(id: string): Board {
-  //   const board = this.boards.find((board) => board.id === id);
-  //   if (!board) {
-  //     throw new NotFoundException('Board not found');
-  //   }
-  //   return board;
-  // }
-
   createBoard({ title, description }: CreateBoardDto): Promise<Board> {
     return this.boardRepository.createBoard({ title, description });
   }
 
-  // createBoard(createBoardDto: CreateBoardDto): Board {
-  //   const board: Board = {
-  //     id: uuid(),
-  //     status: BoardStatus.PUBLIC,
-  //     ...createBoardDto,
-  //   };
-  //   this.boards.push(board);
-  //   return board;
-  // }
-  // deleteBoardById(id: string): void {
-  //   const board = this.getBoardById(id);
-  //   this.boards = this.boards.filter((board) => board.id !== board.id);
-  // }
+  async deleteBoardById(id: number): Promise<void> {
+    const result = await this.boardRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Board with id ${id} not found`);
+    }
+  }
+
   // updateBoardById(id: string, status: BoardStatus): Board {
   //   const board = this.getBoardById(id);
   //   board.status = status;
