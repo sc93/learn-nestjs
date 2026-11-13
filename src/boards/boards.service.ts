@@ -11,6 +11,10 @@ import { Board } from './board.entity.js';
 export class BoardsService {
   constructor(private readonly boardRepository: BoardRepository) {}
 
+  async getAllBoards(): Promise<Board[]> {
+    return this.boardRepository.find();
+  }
+
   async getBoardById(id: number): Promise<Board> {
     const board = await this.boardRepository.findOne({
       where: {
@@ -37,9 +41,12 @@ export class BoardsService {
     }
   }
 
-  // updateBoardById(id: string, status: BoardStatus): Board {
-  //   const board = this.getBoardById(id);
-  //   board.status = status;
-  //   return board;
-  // }
+  async updateBoardById(id: number, status: BoardStatus): Promise<Board> {
+    const board = await this.getBoardById(id);
+
+    board.status = status;
+    await this.boardRepository.save(board);
+
+    return board;
+  }
 }
